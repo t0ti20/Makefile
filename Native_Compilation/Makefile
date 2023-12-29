@@ -17,16 +17,7 @@ INCS= \
 LIBS= 
 #*******************************************************************
 #*******************************************************************
-# (@)					-hide command
-# (%.o)					-all object files
-# $(CC)					-replace variable
-# ($<)					-One Dependency at time
-# ($@)					-One Output at time
-# ($(wildcard *.c))			-all fiiles .c
-# $(CC)					-replace variable
 #Generate Hex File
-#*******************************************************************
-#*******************************************************************
 SRC=$(wildcard *.c)
 SRS=$(wildcard *.s)
 OBJ=$(SRC:.c=.o) $(SRS:.s=.o)
