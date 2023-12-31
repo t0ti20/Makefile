@@ -41,29 +41,29 @@ INCS+=$(shell find $(SOURCEDIR) -name '*.h' -exec dirname {} \; | uniq | sed 's/
 # Default Make
 all: static dynamic
 #*****************************************
+#Compile And Assimble CPP Files 
 $(BUILD_DIR)/%.o: %.cpp
-	@mkdir -p $(BUILD_DIR)
 	@$(CC) $(CFLAGS) $(INCS) -c $< -o $@
+#Compile And Assimble C Files 
 $(BUILD_DIR)/%.o: %.c
-	@mkdir -p $(BUILD_DIR)
 	@$(CC) $(CFLAGS) $(INCS) -c $< -o $@
+#Assimble Assimply Files
 $(BUILD_DIR)/%.o: %.s
-	@mkdir -p $(BUILD_DIR)
 	@$(CC) $(CFLAGS) $(INCS) -c $< -o $@
 #*****************************************
 # Build Dynamic Library
 static: $(BUILD_DIR)/lib$(LIB_NAME).a
 	@echo "========= Done Creating Static Library ========"
-$(BUILD_DIR)/lib$(LIB_NAME).so: $(OBJ_FILES)
+$(BUILD_DIR)/lib$(LIB_NAME).a: $(OBJ_FILES)
 	@mkdir -p $(BUILD_DIR)
-	@$(CC) $(CFLAGS) $(INCS) $(LDFLAGS) -o $@ $^
+	@$(AR) rcs $@ $^
 #*****************************************
 # Build Static Library
 dynamic: $(BUILD_DIR)/lib$(LIB_NAME).so
 	@echo "========= Done Creating Dynamic Library ========"
-$(BUILD_DIR)/lib$(LIB_NAME).a: $(OBJ_FILES)
+$(BUILD_DIR)/lib$(LIB_NAME).so: $(OBJ_FILES)
 	@mkdir -p $(BUILD_DIR)
-	@$(AR) rcs $@ $^
+	@$(CC) $(CFLAGS) $(INCS) $(LDFLAGS) -o $@ $^
 #*****************************************
 clean:
 	@rm -rf $(BUILD_DIR)
