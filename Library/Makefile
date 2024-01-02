@@ -15,11 +15,11 @@ LIB_NAME = mylibrary
 # Build Directory
 BUILD_DIR = Build
 # Compiler
-CC = gcc
+CC = g++
 # Archiver
 AR = ar
 # Compiler Flags
-CFLAGS = -Wall -Werror -pedantic -std=c11
+CFLAGS = -Wall -Werror -pedantic 
 # Linker Flags
 LDFLAGS = -shared
 # Archiver Flags
@@ -42,28 +42,34 @@ INCS+=$(shell find $(SOURCEDIR) -name '*.h' -exec dirname {} \; | uniq | sed 's/
 all: static dynamic
 #*****************************************
 #Compile And Assimble CPP Files 
-$(BUILD_DIR)/%.o: %.cpp
+%.o: %.cpp
+	@mkdir -p $(BUILD_DIR)
 	@$(CC) $(CFLAGS) $(INCS) -c $< -o $@
+	@mv $@ $(BUILD_DIR)
 #Compile And Assimble C Files 
-$(BUILD_DIR)/%.o: %.c
+%.o: %.c
+	@mkdir -p $(BUILD_DIR)
 	@$(CC) $(CFLAGS) $(INCS) -c $< -o $@
+	@mv $@ $(BUILD_DIR)
 #Assimble Assimply Files
-$(BUILD_DIR)/%.o: %.s
+%.o: %.s
+	@mkdir -p $(BUILD_DIR)
 	@$(CC) $(CFLAGS) $(INCS) -c $< -o $@
+	@mv $@ $(BUILD_DIR)
 #*****************************************
 # Build Dynamic Library
 static: $(BUILD_DIR)/lib$(LIB_NAME).a
 	@echo "========= Done Creating Static Library ========"
 $(BUILD_DIR)/lib$(LIB_NAME).a: $(OBJ_FILES)
 	@mkdir -p $(BUILD_DIR)
-	@$(AR) rcs $@ $^
+	@$(AR) rcs $@ $(addprefix $(BUILD_DIR)/,$(notdir $(OBJ_FILES)))
 #*****************************************
 # Build Static Library
 dynamic: $(BUILD_DIR)/lib$(LIB_NAME).so
 	@echo "========= Done Creating Dynamic Library ========"
 $(BUILD_DIR)/lib$(LIB_NAME).so: $(OBJ_FILES)
 	@mkdir -p $(BUILD_DIR)
-	@$(CC) $(CFLAGS) $(INCS) $(LDFLAGS) -o $@ $^
+	@$(CC) $(CFLAGS) $(INCS) $(LDFLAGS) -o $@ $(addprefix $(BUILD_DIR)/,$(notdir $(OBJ_FILES)))
 #*****************************************
 clean:
 	@rm -rf $(BUILD_DIR)
